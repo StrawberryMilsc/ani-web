@@ -53,7 +53,7 @@ jobs:
           # Deploy using sshpass
           sshpass -p "$DROPLET_PASSWORD" ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} "
             # Pull the latest image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }}
+            docker pull ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }} || { echo 'Docker pull failed'; exit 1; }
             
             # Stop existing container
             docker stop ani-web || true
@@ -63,5 +63,5 @@ jobs:
             docker run -d \
               --name ani-web \
               -p 3000:3000 \
-              ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }}
+              ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }} || { echo 'Docker run failed'; exit 1; }
           "
