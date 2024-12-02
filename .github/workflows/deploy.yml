@@ -35,29 +35,33 @@ jobs:
       
       # Build Docker image
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/web-app:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }} .
       
       # Push image to Docker Hub
       - name: Push to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/web-app:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }}
       
       # Deploy to Digital Ocean Droplet
       - name: Deploy to Droplet
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: ${{ secrets.DROPLET_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Pull the latest image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/web-app:${{ github.sha }}
-            
-            # Stop existing container
-            docker stop web-app || true
-            docker rm web-app || true
-            
-            # Run new container
-            docker run -d \
-              --name web-app \
-              -p 3000:3000 \
-              ${{ secrets.DOCKER_USERNAME }}/web-app:${{ github.sha }}
+      env:
+        DROPLET_PASSWORD: ${{ secrets.DROPLET_PASSWORD }}
+      run: |
+        # Install sshpass for password authentication
+        sudo apt-get update
+        sudo apt-get install -y sshpass
+        
+        # Deploy using sshpass
+        sshpass -p "$DROPLET_PASSWORD" ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} "
+          # Pull the latest image
+          docker pull ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }}
+          
+          # Stop existing container
+          docker stop ani-web || true
+          docker rm ani-web || true
+          
+          # Run new container
+          docker run -d \
+            --name ani-web \
+            -p 3000:3000 \
+            ${{ secrets.DOCKER_USERNAME }}/ani-web:${{ github.sha }}
+        "
