@@ -1,6 +1,6 @@
 <template>
   <div class="countdown-container">
-    <h1>Its will be...</h1>
+    <h1>It will be...</h1>
     <div class="countdown">
       <div class="time-block">
         <span class="number">{{ days }}</span>
@@ -23,7 +23,7 @@
   </div>
 
   <div class="countdown-container">
-    <h1>But its already been...</h1>
+    <h1>But it's already been...</h1>
     <div class="countdown">
       <div class="time-block">
         <span class="number">{{ sofarDays }}</span>
@@ -108,7 +108,7 @@ onUnmounted(() => {
 .countdown {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 0.5rem;
   margin-top: 2rem;
   flex-wrap: wrap;
 }
@@ -117,8 +117,9 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1 1 100px;
+  flex: 0.15 1 100px;
   min-width: 80px;
+  margin-bottom: 0.5rem;
 }
 
 .number {
