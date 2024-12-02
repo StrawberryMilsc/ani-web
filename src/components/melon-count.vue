@@ -110,12 +110,15 @@ onUnmounted(() => {
   justify-content: center;
   gap: 2rem;
   margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
 .time-block {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1 1 100px;
+  min-width: 80px;
 }
 
 .number {
@@ -133,5 +136,23 @@ onUnmounted(() => {
   margin-top: 0.5rem;
   color: #666;
   text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .number {
+    font-size: 3rem;
+  }
+
+  .label {
+    font-size: 1rem;
+  }
+
+  .countdown {
+    flex-direction: column;
+  }
+
+  .time-block {
+    margin-bottom: 1rem;
+  }
 }
 </style>
