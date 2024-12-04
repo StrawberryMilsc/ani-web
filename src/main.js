@@ -5,7 +5,6 @@ import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import melonCount from './components/melon-count.vue'
 import updateDates from './components/update_dates.vue'
-import postIt from './components/post-it.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
