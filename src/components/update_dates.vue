@@ -17,35 +17,32 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useFetch } from 'vue-app';
-
 const start_date = ref('');
 const end_date = ref('');
 
-const updateInfo = async () => {
+const updateInfo = () => {
   const data = {
     start_date: start_date.value,
     end_date: end_date.value,
   };
-
-  try {
-    const response = await useFetch('/api/update-melon-info', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  fetch('./assets/melon-c-info.json')
+    .then(response => response.json())
+    .then(json => {
+      json.start_date = start_date.value;
+      json.end_date = end_date.value;
+      return json;
+    })
+    .then(json => {
+      fetch('./assets/melon-c-info.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(json),
+      });
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to update melon info');
-    }
-
-    alert('Melon info updated successfully!');
-  } catch (error) {
-    console.error(error);
-    alert('Failed to update melon info');
-  }
+ 
 };
 </script>
 

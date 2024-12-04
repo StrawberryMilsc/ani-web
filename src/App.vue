@@ -1,9 +1,9 @@
 <script setup>
-import melonCount from './components/melon-count.vue';
+
 </script>
 
 <template>
-  <melon-count />
+  <router-view />
 </template>
 
 <style scoped>
