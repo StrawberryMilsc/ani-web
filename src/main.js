@@ -16,10 +16,6 @@ const router = createRouter({
     {
       path: '/update_dates',
       component: updateDates
-    },
-    {
-      path: '/post-it',
-      component: postIt
     }
   ]
 })
