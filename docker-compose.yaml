@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  webapp:
+    image: StrawburryMilk/ani-web:latest
+    ports:
+      - "3000:3000"  # Map container port to host port
+    restart: always  # Automatically restart if container stops
