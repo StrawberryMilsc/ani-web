@@ -3,6 +3,7 @@ import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import melonCount from './components/melon-count.vue'
 import updateDates from './components/update_dates.vue'
+import dailyNotes from './components/daily_notes.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -14,6 +15,10 @@ const router = createRouter({
       path: '/update_dates',
       component: updateDates
     },
+    {
+      path: '/dailyNotes',
+      component: dailyNotes
+    }
   ]
 })
 
