@@ -5,6 +5,7 @@ import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import melonCount from './components/melon-count.vue'
 import updateDates from './components/update_dates.vue'
+import budget from './components/budget.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -15,6 +16,10 @@ const router = createRouter({
     {
       path: '/update_dates',
       component: updateDates
+    },
+    {
+      path: '/budget',
+      component: budget
     }
   ]
 })
