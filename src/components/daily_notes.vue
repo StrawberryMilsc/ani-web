@@ -14,101 +14,72 @@
 </template>
 
 <script setup>
-import { ref, onMounted, getCurrentInstance } from 'vue';
-import dailyNotes from '../assets/daily-notes.json';
+import { ref, onMounted } from 'vue';
 
 const notes = ref([]);
 const note = ref('');
 let previousHour = 23;
 
-// Function to get current date in YYYY-MM-DD format
-function getCurrentDate() {
-    const date = new Date();
-    return date.toISOString().split('T')[0];
-}
-
+// Load current notes from the server
 async function loadCurrentNotes() {
     try {
-        const response = await fetch('./assets/daily-notes.json');
+        const response = await fetch('/api/notes');
         const data = await response.json();
-        
-        // If there are no notes for today, initialize an empty array
-        if (!data.notes) {
-            data.notes = [];
-        }
-        
-        // Update the local notes array
         notes.value = data.notes.map(note => note.content);
-        
-        // Update the dailyNotes object
-        dailyNotes.notes = data.notes;
     } catch (error) {
         console.error('Error loading notes:', error);
     }
 }
 
-function updateNotes() {
-    const newNote = {
-        time: new Date().getHours(),
-        title: 'Note ' + (dailyNotes.notes.length + 1),
-        content: note.value
-    };
-    
-    dailyNotes.notes.push(newNote);
-    notes.value = dailyNotes.notes.map(note => note.content);
-}
-
-async function writeNotes() {
-    const currentDate = getCurrentDate();
-    
-    const todayNotes = {
-        date: currentDate,
-        notes: [...dailyNotes.notes]
-    };
+// Add a new note
+async function addNote() {
+    if (!note.value.trim()) return;
 
     try {
-        const response = await fetch('./assets/daily-notes.json');
-        const existingData = await response.json();
-
-        if (!existingData.history) {
-            existingData.history = [];
-        }
-
-        existingData.history.push(todayNotes);
-        existingData.notes = []; // Reset current notes
-
-        await fetch('./assets/daily-notes.json', {
-            method: 'PUT',
+        const response = await fetch('/api/notes', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(existingData),
+            body: JSON.stringify({ content: note.value }),
         });
 
-        // Update local state
-        dailyNotes.notes = [];
-        notes.value = [];
+        if (response.ok) {
+            await loadCurrentNotes(); // Reload notes after adding
+            note.value = ''; // Clear the input
+        }
     } catch (error) {
-        console.error('Error saving notes:', error);
+        console.error('Error adding note:', error);
     }
 }
 
-function addNote() {
-    updateNotes();
-    note.value = '';
+// Save notes at midnight
+async function saveDailyNotes() {
+    try {
+        const response = await fetch('/api/save-daily-notes', {
+            method: 'POST',
+        });
+
+        if (response.ok) {
+            await loadCurrentNotes(); // Reload notes after saving
+        }
+    } catch (error) {
+        console.error('Error saving daily notes:', error);
+    }
 }
 
-// Function to check if it's midnight
+// Check if it's midnight
 function checkMidnight() {
     const now = new Date();
     if (now.getHours() <= previousHour) {
-        writeNotes();
+        saveDailyNotes();
     }
     previousHour = now.getHours();
 }
 
 onMounted(async () => {
     await loadCurrentNotes();
+    // Check every 2 hours for midnight
     setInterval(checkMidnight, 7200000);
 });
 </script>
